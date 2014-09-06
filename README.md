@@ -1,5 +1,5 @@
 Flatten CommonJS modules.
-As far closure compiler can quite easily expand scopes (so that means modules), you just have to expand modules to global scope as a variables with non-interfering other first-class variables.
+As far closure compiler can quite easily expand any objects, if to merge modules into single scope, which means resolve global vars conflict, replace all `module.exports` and `require` declarations, you will get one-scope bundle, which closure compiler in theory should compress the way better than separated by scopes browserify bundle.
 
 #### Sources:
 
@@ -31,9 +31,9 @@ var a_exports = {
 var a = module_a;
 ```
 
-So it does the same task as a ClosureCompiler with `--process_commonjs_modules` flag, but it avoids creating of `goog.provide`'s and makes variables more human-readable, as if you use Erlang or etc.
+So it does the same task as a ClosureCompiler with `--process_commonjs_modules` flag, but it avoids creating of `goog.provide`'s and makes variables more human-readable.
 
-It’s the best to use as pre-closurecompiler task:
+It’s best as pre-closurecompiler task:
 
 ```
 "cat": "uncommon src/*.js index.js > dist/bundle.js"
