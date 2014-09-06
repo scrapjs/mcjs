@@ -1,4 +1,4 @@
-Flatten CommonJS modules.
+Flatten CommonJS modules. [WIP]
 As far closure compiler can quite easily expand any objects, if to merge modules into single scope, which means resolve global vars conflict, replace all `module.exports` and `require` declarations, you will get one-scope bundle, which closure compiler in theory should compress the way better than separated by scopes browserify bundle.
 
 #### Sources:
@@ -20,7 +20,7 @@ var a = require('a');
 var z = 456;
 ```
 
-#### `$ uncommon index.js`
+#### Command `$ uncommon index.js`
 
 ```js
 var a_z = 123;
