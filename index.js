@@ -1,7 +1,6 @@
 /**
  * @module uncommon
  *
- * @todo  globs
  * @todo  tests
  * @todo  bin
  */
@@ -22,12 +21,30 @@ var browserify = require('browserify');
 var splicer = require('labeled-stream-splicer');
 
 
+//get options
+var opts = require("nomnom")
+.option('debug', {
+	abbr: 'd',
+	flag: true,
+	help: 'Print debugging info'
+})
+.option('module_prefix', {
+	abbr: 'p',
+	flag: false,
+	help: 'Prefix to add to module variables'
+})
+.parse();
+
+
 
 //global modules common variables aliases: 'var1: var1, var2: var2alias'
 var globalVariables = {};
 
 //module variable names keyed by module ids with aliases
 var moduleVariableNames = {};
+
+//catch require in code (too bad, i know, but the most fast relative to esprima)
+var requireRe = /require\(['"]([^)]*)['"]\)?/g;
 
 
 //process resulted modules deps once they’ve formed
@@ -54,10 +71,7 @@ var cc = concat(function(list){
 	});
 
 
-
 	//replace require calls very stupidly, again, via RegEx
-	var requireRe = /require\(['"]([^)]*)['"]\)?/g;
-	// console.log(moduleVariableNames)
 	result = result.replace(requireRe, function(requireStr, modName, idx, fullSrc){
 		modName = require.resolve(modName);
 
@@ -65,7 +79,7 @@ var cc = concat(function(list){
 			return moduleVariableNames[modName];
 		}
 
-		throw Error('Module to require not found: `' + modName + '`');
+		throw Error('Module to require isn’t found: `' + modName + '`');
 	});
 
 
@@ -79,6 +93,7 @@ var cc = concat(function(list){
 //each module processor
 var em = map(function(dep, done){
 	// console.log('---------dep:\n',util.inspect(dep, {colors:true}));
+	var dir = path.dirname(dep.file);
 	var src = dep.source;
 
 	//get module var name
@@ -96,6 +111,15 @@ var em = map(function(dep, done){
 	src = src.replace(/module\.exports/g, moduleVariableName);
 	src = src.replace(/module\[['"]\.exports['"]\]/g, moduleVariableName);
 	src = src.replace(/exports/g, moduleVariableName);
+
+
+	//resolve require calls
+	src = src.replace(requireRe, function(requireStr, modName, idx, fullSrc){
+		modName = require.resolve(dir + '\\' + modName);
+
+		return 'require(\'' + modName.replace(/\\/g, '/') + '\')';
+	});
+	// console.log(src)
 
 
 	//analyze scopes - resolve variables interference
@@ -133,14 +157,20 @@ var em = map(function(dep, done){
 
 
 
+//resolve files
+var files = opts._.map(function(filePath){
+	return path.resolve(filePath);
+});
+
+
 //get module deps stream
-var b = browserify(['./1.js'], {
+var b = browserify(files, {
 	// fullPaths:false
 });
 
-// b.pipeline.get('emit-deps')
+b.pipeline.get('emit-deps')
 // .pipe(map(function(a, b){
-// 	console.log(util.inspect(a, {colors: true}))
+// 	console.log(123, util.inspect(a, {colors: true}))
 // 	b();
 // }));
 b.pipeline.get('emit-deps').pipe(em).pipe(cc);
