@@ -4,7 +4,9 @@ As far closure compiler can quite easily expand any objects, if to merge modules
 
 That way reminds the times when you didn’t use common js modules and just placed code in one file (ill practice).
 
-#### Sources:
+#### Use:
+
+###### `$ npm install -g uncommonjs`
 
 ###### `a.js`
 
