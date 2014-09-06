@@ -1,0 +1,57 @@
+<!doctype html>
+
+<script src="../node_modules/esprima/esprima.js"></script>
+<script src="../node_modules/estraverse/estraverse.js"></script>
+<script src="../node_modules/escodegen/escodegen.browser.min.js"></script>
+<script src="../node_modules/escope/escope.js"></script>
+
+<script src="../src/util.js"></script>
+
+<code><pre></pre></code>
+
+<script>
+	/**
+	 * return file src by path
+	 *
+	 * @param {string} path
+	 *
+	 * @return {string} source
+	 */
+
+	function getFileSource(path){
+		// console.log('resolve', path)
+		//FIXME: XHR is forbidden without server. Try to resolve via script/image/etc
+		try {
+			request = new XMLHttpRequest();
+
+			// `false` makes the request synchronous
+			request.open('GET', path, false);
+			request.send();
+		}
+
+		catch (e) {
+			return '';
+		}
+
+		finally {
+			if (request.status === 200) {
+				// console.log('SUCCESS', request);
+				return request.response;
+			}
+		}
+
+		return '';
+	}
+</script>
+
+<script>
+	var src = getFileSource('1.js');
+	document.querySelector('pre').innerHTML = src;
+
+	var ast = esprima.parse(src);
+
+	var scopes = escope.analyze(ast, {optimistic: true});
+
+	console.log(scopes)
+
+</script>
