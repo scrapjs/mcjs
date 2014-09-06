@@ -129,17 +129,21 @@ var em = map(function(dep, done){
 	var moduleVars = escope.analyze(ast, {optimistic: true}).scopes[0].variables;
 
 	moduleVars.forEach(function(item){
-		// console.log('\nVariable:\n', item.name)
+		console.log('\nVariable:', item.name)
 
 		if (globalVariables[item.name]) {
 			//rename variable
 			var newName = moduleVariableName + '_' + item.name
-			// console.log('Rename var: ', item.name, ' → ', newName)
+			console.log('Rename var: ', item.name, ' → ', newName)
 
 			//replace each occurence
 			item.references.forEach(function(ref){
 				ref.identifier.name = newName;
 			});
+			//as well as definition
+			item.identifiers.forEach(function(ident){
+				ident.name = newName;
+			})
 		} else {
 			//take place for var
 			globalVariables[item.name] = item.name;
@@ -192,5 +196,5 @@ function getModuleVarName(name){
 	//get rid of .js postfix
 	if (name.slice(-3) === '.js') name = name.slice(0,-3);
 
-	return 'm_' + name;
+	return opts.module_prefix || 'm_' + name;
 }
