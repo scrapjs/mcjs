@@ -123,7 +123,7 @@ handleEach = map(function(dep, done){
 	//replace `exports` & `module.exports` in code with `newName = xxx`
 	//stupid regex replacers are the way faster and simpler than esprima for that goal
 	src = src.replace(/\bmodule\.exports/g, moduleVariableName);
-	src = src.replace(/\bmodule\b\[['"]\.exports['"]\]/g, moduleVariableName);
+	src = src.replace(/\bmodule\b\[\s*['"]exports['"]\s*\]/g, moduleVariableName);
 	src = src.replace(/\bexports\b/g, moduleVariableName);
 
 	//replace all `module` calls with an empty object
