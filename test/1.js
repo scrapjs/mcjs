@@ -6,3 +6,5 @@ exports = {
 var c = 3;
 
 exports['z'] = 4;
+
+var d = require(2)
