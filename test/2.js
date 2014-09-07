@@ -15,3 +15,5 @@ sdf = 46;
 module.exports.z = c;
 
 module['exports']['f'] = sdf;
+
+var n = require('node-noop');

@@ -14,7 +14,9 @@
     "esprima": "~1.2.2",
     "map-stream": "~0.1.0",
     "nomnom": "~1.8.0",
-    "slug": "~0.5.0"
+    "slug": "~0.5.0",
+    "resolve": "~1.0.0",
+    "node-noop": "0.0.1"
   },
   "devDependencies": {},
   "scripts": {

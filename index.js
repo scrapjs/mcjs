@@ -2,6 +2,8 @@
  * @module uncommon
  *
  * @todo  tests
+ * @todo API & module
+ * @todo Options: prefix, debug, comments, stub
  */
 
 var util = require('util');
@@ -13,6 +15,7 @@ var concat = require('concat-stream');
 var esprima = require('esprima');
 var escodegen = require('escodegen');
 var escope = require('escope');
+var resolve = require('resolve');
 
 
 var uc = module.exports = {};
@@ -34,13 +37,12 @@ var requireRe = /require\(['"]([^)]*)['"]\)?/g;
 uc.all = concat(function(list){
 	// console.log('concat:\n',util.inspect(list, {colors:true}));
 
-
 	//declare all var module names beforehead
 	//in order not to get accessed undeclared
-	var declStr = '/* --------- Modules declaration ----------- */\n';
-	declStr += 'var ';
+	var declStr = '/* --------- Modules declarations ----------- */\n';
+	declStr += 'var module={}, ';
 	list.forEach(function(item){
-		declStr += item.name + ', ';
+		declStr += item.name + '={}, ';
 	});
 	declStr = declStr.slice(0, -2) + ';\n\n';
 	// console.log(declStr);
@@ -56,7 +58,7 @@ uc.all = concat(function(list){
 
 	//replace require calls very stupidly, again, via RegEx
 	result = result.replace(requireRe, function(requireStr, modName, idx, fullSrc){
-		modName = require.resolve(modName);
+		modName = resolve.sync(modName);
 
 		if (moduleVariableNames[modName]) {
 			return moduleVariableNames[modName];
@@ -96,7 +98,9 @@ uc.each = map(function(dep, done){
 
 	//resolve require calls
 	src = src.replace(requireRe, function(requireStr, modName, idx, fullSrc){
-		modName = require.resolve(dir + '\\' + modName);
+		modName = resolve.sync(modName, {
+			basedir: dir
+		});
 
 		return 'require(\'' + modName.replace(/\\/g, '/') + '\')';
 	});
