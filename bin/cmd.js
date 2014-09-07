@@ -9,11 +9,11 @@ process.stdout.on('error', process.exit);
 
 //get options
 var opts = require('nomnom')
-.option('debug', {
-	abbr: 'd',
-	flag: true,
-	help: 'Print debugging info'
-})
+// .option('debug', {
+// 	abbr: 'd',
+// 	flag: true,
+// 	help: 'Print debugging info'
+// })
 .option('basedir', {
 	abbr: 'b',
 	flag: false,

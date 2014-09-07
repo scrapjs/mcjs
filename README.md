@@ -25,7 +25,7 @@ var a = require('a');
 var z = 456;
 ```
 
-###### `$ uncommon index.js`
+###### `$ uncommon index.js` or `$ cat index.js | uncommon.js`
 
 ```js
 var a_z = 123;
@@ -35,6 +35,7 @@ var a_exports = {
 }
 var a = module_a;
 ```
+
 
 So it does the same task as a ClosureCompiler with `--process_commonjs_modules` flag, but it avoids creating of `goog.provide`'s and makes variables more human-readable.
 
