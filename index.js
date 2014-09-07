@@ -23,7 +23,7 @@ var resolve = require('resolve');
  */
 
 var uc = module.exports = function(b){
-	b.pipeline.get('sort')
+	b.pipeline.get('dedupe')
 	.pipe(handleEach)
 	.pipe(handleAll);
 
@@ -53,9 +53,18 @@ var requireRe = /require\(['"]?([^'")]*)['"]?\)/g;
 //process resulted modules deps once they’ve formed
 handleAll = concat(function(list){
 	//sort deps to include innermost first
-	//browserify sorting is proper
-	// list = list.reverse();
-	list = list.sort(function(a,b){
+
+	//dupes aliases
+	var dupes={};
+
+	list = list.filter(function(item){
+		//throw away dupes
+		if (item.dedupe) {
+			dupes[item.id] = item.dedupeIndex;
+			return false;
+		}
+		return true;
+	}).sort(function(a,b){
 		//if includes one as an other’s dep
 		if (hasDep(a, b)) return 1;
 		if (hasDep(b, a)) return -1;
@@ -67,8 +76,8 @@ handleAll = concat(function(list){
 
 	//whether a-dep depends on b
 	function hasDep(a, b){
-		for (name in a.deps){
-			if (a.deps[name] === b.id) return true;
+		for (var name in a.deps){
+			if (a.deps[name] === b.id || dupes[a.deps[name]] === b.id) return true;
 		}
 		return false;
 	}
@@ -77,7 +86,13 @@ handleAll = concat(function(list){
 		return Object.keys(a.deps).length;
 	}
 
+
+	// list.forEach(function(item){
+	// 	item.source = item.source.slice(0,30) + '... ' + item.source.length;
+	// });
+	// console.log(dupes)
 	// console.log('concat:\n',util.inspect(list, {colors:true}));
+
 
 	//declare all var module names beforehead
 	//in order not to get accessed undeclared
@@ -87,7 +102,6 @@ handleAll = concat(function(list){
 		declStr += item.name + ', ';
 	});
 	declStr = declStr.slice(0, -2) + ';\n\n';
-	// console.log(declStr);
 
 
 	//concat sources in the proper order of declaration
