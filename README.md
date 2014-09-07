@@ -23,6 +23,8 @@ module.exports = {
 
 var a = require('a');
 var z = 456;
+
+exports = z;
 ```
 
 ###### `$ uncommon index.js > bundle.js` or `$ cat index.js | uncommon > bundle.js`
@@ -30,12 +32,18 @@ var z = 456;
 ```js
 // bundle.js
 
-var a_z = 123;
-var a_exports = {
+var m_a, m_index;
+
+var z = 123;
+m_a = {
 	x:1,
-	y:module_a_z
-}
-var a = module_a;
+	y:z
+};
+
+var a = m_a;
+var m_index_z = 456;
+
+m_index = m_index_z;
 ```
 
 
