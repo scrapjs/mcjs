@@ -35,6 +35,7 @@ var uc = module.exports = function(b){
 	return bundle;
 };
 
+
 var prefix = 'm_';
 
 
@@ -52,18 +53,20 @@ var requireRe = /require\(['"]([^)]*)['"]\)?/g;
 handleAll = concat(function(list){
 
 	//sort deps to include innermost first
-	list = list.sort(function(a,b){
-		if (hasDep(a, b)) return 1;
-		else return -1;
-	});
+	//browserify sorting is proper
+	list = list.reverse();
+	// list = list.sort(function(a,b){
+	// 	if (hasDep(a, b)) return 1;
+	// 	else return -1;
+	// });
 
 	//whether a-dep depends on b
-	function hasDep(a, b){
-		for (name in a.deps){
-			if (a.deps[name] === b.id) return true;
-		}
-		return false;
-	}
+	// function hasDep(a, b){
+	// 	for (name in a.deps){
+	// 		if (a.deps[name] === b.id) return true;
+	// 	}
+	// 	return false;
+	// }
 	// console.log('concat:\n',util.inspect(list, {colors:true}));
 
 	//declare all var module names beforehead
