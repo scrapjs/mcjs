@@ -4,36 +4,20 @@
  * @todo  tests
  */
 
-
-
 var util = require('util');
 var map = require('map-stream');
 var fs = require('fs');
 var slug = require('slug');
 var path = require('path');
 var concat = require('concat-stream');
-var estraverse = require('estraverse');
 var esprima = require('esprima');
 var escodegen = require('escodegen');
 var escope = require('escope');
-var browserify = require('browserify');
-var splicer = require('labeled-stream-splicer');
 
 
-//get options
-var opts = require("nomnom")
-.option('debug', {
-	abbr: 'd',
-	flag: true,
-	help: 'Print debugging info'
-})
-.option('module_prefix', {
-	abbr: 'p',
-	flag: false,
-	help: 'Prefix to add to module variables'
-})
-.parse();
+var uc = module.exports = {};
 
+var prefix = 'm_';
 
 
 //global modules common variables aliases: 'var1: var1, var2: var2alias'
@@ -47,7 +31,7 @@ var requireRe = /require\(['"]([^)]*)['"]\)?/g;
 
 
 //process resulted modules deps once they’ve formed
-var cc = concat(function(list){
+uc.all = concat(function(list){
 	// console.log('concat:\n',util.inspect(list, {colors:true}));
 
 
@@ -87,10 +71,8 @@ var cc = concat(function(list){
 });
 
 
-
-
 //each module processor
-var em = map(function(dep, done){
+uc.each = map(function(dep, done){
 	// console.log('---------dep:\n',util.inspect(dep, {colors:true}));
 	var dir = path.dirname(dep.file);
 	var src = dep.source;
@@ -128,12 +110,12 @@ var em = map(function(dep, done){
 	var moduleVars = escope.analyze(ast, {optimistic: true}).scopes[0].variables;
 
 	moduleVars.forEach(function(item){
-		console.log('\nVariable:', item.name)
+		// console.log('\nVariable:', item.name)
 
 		if (globalVariables[item.name]) {
 			//rename variable
 			var newName = moduleVariableName + '_' + item.name
-			console.log('Rename var: ', item.name, ' → ', newName)
+			// console.log('Rename var: ', item.name, ' → ', newName)
 
 			//replace each occurence
 			item.references.forEach(function(ref){
@@ -158,30 +140,6 @@ var em = map(function(dep, done){
 });
 
 
-
-
-//resolve files
-var files = opts._.map(function(filePath){
-	return path.resolve(filePath);
-});
-
-
-//get module deps stream
-var b = browserify(files, {
-	// fullPaths:false
-});
-
-b.pipeline.get('emit-deps')
-// .pipe(map(function(a, b){
-// 	console.log(123, util.inspect(a, {colors: true}))
-// 	b();
-// }));
-b.pipeline.get('emit-deps').pipe(em).pipe(cc);
-
-
-b.bundle(function(e,r){});
-
-
 /**
  * variable namer based on module id passed
  */
@@ -195,5 +153,5 @@ function getModuleVarName(name){
 	//get rid of .js postfix
 	if (name.slice(-3) === '.js') name = name.slice(0,-3);
 
-	return opts.module_prefix || 'm_' + name;
+	return prefix + name;
 }

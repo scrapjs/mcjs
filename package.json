@@ -7,13 +7,11 @@
     "test": "test"
   },
   "dependencies": {
-    "browserify": "~5.11.1",
+    "browserify": "~5.*",
     "concat-stream": "~1.4.6",
     "escodegen": "~1.4.1",
     "escope": "~1.0.1",
     "esprima": "~1.2.2",
-    "estraverse": "~1.5.1",
-    "labeled-stream-splicer": "~1.0.0",
     "map-stream": "~0.1.0",
     "nomnom": "~1.8.0",
     "slug": "~0.5.0"
@@ -22,7 +20,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin": { "uncommon": "./index.js"},
+  "bin": {
+    "uncommon": "bin/cmd.js"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/dfcreative/uncommon.git"
@@ -35,10 +35,13 @@
     "module",
     "commonjs"
   ],
-  "author": "dfcreative",
+  "author": {
+    "name": "dfcreative"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dfcreative/uncommon/issues"
   },
-  "homepage": "https://github.com/dfcreative/uncommon"
+  "homepage": "https://github.com/dfcreative/uncommon",
+  "readmeFilename": "README.md"
 }
