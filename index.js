@@ -40,7 +40,7 @@ uc.all = concat(function(list){
 	//declare all var module names beforehead
 	//in order not to get accessed undeclared
 	var declStr = '/* --------- Modules declarations ----------- */\n';
-	declStr += 'var module={}, ';
+	declStr += 'var ';
 	list.forEach(function(item){
 		declStr += item.name + '={}, ';
 	});
@@ -91,10 +91,12 @@ uc.each = map(function(dep, done){
 
 	//replace `exports` & `module.exports` in code with `newName = xxx`
 	//stupid regex replacers are the way faster and simpler than esprima for that goal
-	src = src.replace(/module\.exports/g, moduleVariableName);
-	src = src.replace(/module\[['"]\.exports['"]\]/g, moduleVariableName);
-	src = src.replace(/exports/g, moduleVariableName);
+	src = src.replace(/\bmodule\.exports/g, moduleVariableName);
+	src = src.replace(/\bmodule\b\[['"]\.exports['"]\]/g, moduleVariableName);
+	src = src.replace(/\bexports\b/g, moduleVariableName);
 
+	//replace all `module` calls with an empty object
+	src = src.replace(/\bmodule\b/g, '{}');
 
 	//resolve require calls
 	src = src.replace(requireRe, function(requireStr, modName, idx, fullSrc){
