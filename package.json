@@ -1,6 +1,6 @@
 {
   "name": "uncommonjs",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Merge CommonJS modules into a single file",
   "main": "index.js",
   "directories": {
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "node-noop": "0.0.1"
-    },
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
