@@ -49,6 +49,8 @@ var m_index_z = 456;
 m_index = m_index_z;
 ```
 
+You can see [the real example of uncommonified code](https://github.com/dfcreative/mod/blob/master/dist/mod.js).
+
 
 So it does the same task as a ClosureCompiler with `--process_commonjs_modules` flag, but it avoids creating of `goog.provide`'s and makes variables more human-readable.
 
