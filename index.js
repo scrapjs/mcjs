@@ -181,8 +181,8 @@ function getModuleVarName(dep){
 	}
 
 	else if (dep.entry) {
-		var matchResult = /[^\/\\]+$/.exec(dep.file);
-		modulePath = matchResult[0];
+		var matchResult = /([^\/\\]+)[\/\\][^\/\\]+$/.exec(dep.file);
+		modulePath = matchResult[1];
 	}
 
 	//try to take dirname before index.js, if dep is an entry
