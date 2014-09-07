@@ -50,8 +50,21 @@ var requireRe = /require\(['"]([^)]*)['"]\)?/g;
 
 //process resulted modules deps once they’ve formed
 handleAll = concat(function(list){
-	// console.log('concat:\n',util.inspect(list, {colors:true}));
 
+	//sort deps to include innermost first
+	list = list.sort(function(a,b){
+		if (hasDep(a, b)) return 1;
+		else return -1;
+	});
+
+	//whether a-dep depends on b
+	function hasDep(a, b){
+		for (name in a.deps){
+			if (a.deps[name] === b.id) return true;
+		}
+		return false;
+	}
+	// console.log('concat:\n',util.inspect(list, {colors:true}));
 
 	//declare all var module names beforehead
 	//in order not to get accessed undeclared
