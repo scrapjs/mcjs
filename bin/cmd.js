@@ -39,13 +39,8 @@ else {
 		return path.resolve(filePath);
 	});
 
-
 	//get module deps stream
-	var b = browserify({
-		entries: files,
-		// fullPaths: true,
-		// commondir: true
-	});
+	var b = browserify(files);
 }
 
 //start pipeline

@@ -15,7 +15,6 @@ var esprima = require('esprima');
 var escodegen = require('escodegen');
 var escope = require('escope');
 var resolve = require('resolve');
-var umd = require('umd');
 
 
 /**
@@ -27,8 +26,6 @@ var uc = module.exports = function(b){
 	b.pipeline.get('sort')
 	.pipe(handleEach)
 	.pipe(handleAll);
-
-	// umd(result, false, result);
 
 	var bundle = b.bundle(function(e,r){});
 
@@ -55,7 +52,6 @@ var requireRe = /require\(['"]?([^'")]*)['"]?\)/g;
 
 //process resulted modules deps once they’ve formed
 handleAll = concat(function(list){
-
 	//sort deps to include innermost first
 	//browserify sorting is proper
 	// list = list.reverse();
