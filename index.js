@@ -169,28 +169,31 @@ handleEach = map(function(dep, done){
 slug.charmap['.'] = '$';
 slug.charmap['-'] = '_';
 function getModuleVarName(dep){
-	var name;
+	var name, modulePath;
 
 	//catch dirname after last node_modules dirname, if any
 	var idx = dep.file.lastIndexOf('node_modules');
 	if (idx >= 0){
 		var path = dep.file.slice(idx);
 		var matchResult = /node_modules[\/\\](.+)/.exec(path);
-		moduleName = matchResult[1];
+		modulePath = matchResult[1];
 
-		if (moduleName)	{
-			//shorten index.js
-			if (moduleName.indexOf('index.js')) name = moduleName.slice(0, -8);
-			else name = moduleName;
-		}
+	}
 
-		else name = dep.id;
+	else if (dep.entry) {
+		var matchResult = /[^\/\\]+$/.exec(dep.file);
+		modulePath = matchResult[0];
+	}
+
+	//try to take dirname before index.js, if dep is an entry
+	if (modulePath)	{
+		//shorten index.js
+		if (/[\\\/]index.js$/.test(modulePath)) name = modulePath.slice(0, -9);
+		else name = modulePath;
 	}
 
 	//else take id as a name
-	else {
-		name = dep.id;
-	}
+	if (!name) name = dep.id;
 
 	name = slug(name).toLowerCase();
 
