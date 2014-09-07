@@ -2,7 +2,6 @@
  * @module uncommon
  *
  * @todo  tests
- * @todo API & module
  * @todo Options: prefix, debug, comments, stub
  */
 
@@ -16,9 +15,25 @@ var esprima = require('esprima');
 var escodegen = require('escodegen');
 var escope = require('escope');
 var resolve = require('resolve');
+var umd = require('umd');
 
 
-var uc = module.exports = {};
+/**
+ * @module uncommonjs
+ * @param {Browserify} b Browserify instance
+ */
+
+var uc = module.exports = function(b){
+	b.pipeline.get('sort')
+	.pipe(handleEach)
+	.pipe(handleAll);
+
+	// umd(result, false, result);
+
+	var bundle = b.bundle(function(e,r){});
+
+	return bundle;
+};
 
 var prefix = 'm_';
 
@@ -34,8 +49,9 @@ var requireRe = /require\(['"]([^)]*)['"]\)?/g;
 
 
 //process resulted modules deps once they’ve formed
-uc.all = concat(function(list){
+handleAll = concat(function(list){
 	// console.log('concat:\n',util.inspect(list, {colors:true}));
+
 
 	//declare all var module names beforehead
 	//in order not to get accessed undeclared
@@ -67,20 +83,19 @@ uc.all = concat(function(list){
 		throw Error('Module to require isn’t found: `' + modName + '`');
 	});
 
-
 	//stdout stream
 	process.stdout.write(result);
 });
 
 
 //each module processor
-uc.each = map(function(dep, done){
+handleEach = map(function(dep, done){
 	// console.log('---------dep:\n',util.inspect(dep, {colors:true}));
 	var dir = path.dirname(dep.file);
 	var src = dep.source;
 
 	//get module var name
-	var moduleVariableName = getModuleVarName(dep.id);
+	var moduleVariableName = getModuleVarName(dep);
 
 	//save module name to declare beforehead as a first-class var
 	dep.name = moduleVariableName;
@@ -146,18 +161,41 @@ uc.each = map(function(dep, done){
 });
 
 
+
 /**
  * variable namer based on module id passed
  */
 //extend slugifier charmap
 slug.charmap['.'] = '$';
-function getModuleVarName(name){
-	//TODO: resolve absolute path ids
+slug.charmap['-'] = '_';
+function getModuleVarName(dep){
+	var name;
+
+	//catch dirname after last node_modules dirname, if any
+	var idx = dep.file.lastIndexOf('node_modules');
+	if (idx >= 0){
+		var path = dep.file.slice(idx);
+		var matchResult = /node_modules[\/\\](.+)/.exec(path);
+		moduleName = matchResult[1];
+
+		if (moduleName)	{
+			//shorten index.js
+			if (moduleName.indexOf('index.js')) name = moduleName.slice(0, -8);
+			else name = moduleName;
+		}
+
+		else name = dep.id;
+	}
+
+	//else take id as a name
+	else {
+		name = dep.id;
+	}
 
 	name = slug(name).toLowerCase();
 
 	//get rid of .js postfix
 	if (name.slice(-3) === '.js') name = name.slice(0,-3);
 
-	return prefix + name;
+	return !/^[a-zA-Z_$]/.test(name) ? prefix + name : name;
 }

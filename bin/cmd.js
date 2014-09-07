@@ -41,18 +41,15 @@ else {
 
 
 	//get module deps stream
-	var b = browserify(files, {
-		// fullPaths:false
+	var b = browserify({
+		entries: files,
+		// fullPaths: true,
+		// commondir: true
 	});
 }
 
 //start pipeline
-b.pipeline.get('emit-deps').pipe(uc.each).pipe(uc.all);
-
-var bundle = b.bundle(function(e,r){});
-
-
-
+var bundle = uc(b);
 
 
 b.on('error', errorExit);
