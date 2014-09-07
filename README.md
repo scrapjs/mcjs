@@ -1,16 +1,15 @@
-﻿## Merge CommonJS modules.
+﻿## Merge CommonJS modules
 
 As far closure compiler can quite easily expand any objects, if to merge modules into a single scope, which means to resolve global vars conflict and replace all `module.exports` and `require` declarations, then you will get one-scoped bundle, which closure compiler compresses the way better than separated by scopes browserify bundle.
 
-That way reminds the times when you didn’t use common js modules and just placed code in one file (ill practice).
+#### Use
 
-#### Use:
+###### `$ npm install -g uncommonjs` or `$ npm install uncommonjs`
 
-###### `$ npm install -g uncommonjs`
-
-###### `a.js`
 
 ```js
+// a.js
+
 var z = 123;
 module.exports = {
 	x: 1,
@@ -18,16 +17,19 @@ module.exports = {
 };
 ```
 
-###### `index.js`
 
 ```js
+// index.js
+
 var a = require('a');
 var z = 456;
 ```
 
-###### `$ uncommon index.js` or `$ cat index.js | uncommon`
+###### `$ uncommon index.js > bundle.js` or `$ cat index.js | uncommon > bundle.js`
 
 ```js
+// bundle.js
+
 var a_z = 123;
 var a_exports = {
 	x:1,
