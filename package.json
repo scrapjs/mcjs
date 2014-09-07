@@ -15,12 +15,11 @@
     "map-stream": "~0.1.0",
     "nomnom": "~1.8.0",
     "slug": "~0.5.0",
-    "resolve": "~1.0.0",
-    "node-noop": "0.0.1",
-    "umd": "~2.1.0",
-    "derequire": "~1.2.0"
+    "resolve": "~1.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "node-noop": "0.0.1"
+    },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
