@@ -2,7 +2,7 @@
 
 As far closure compiler can quite easily expand any objects, if to merge modules into a single scope, which means to resolve global vars conflict and replace all `module.exports` and `require` declarations, then you will get one-scoped bundle, which closure compiler compresses the way better than separated by scopes browserify bundle.
 
-With [mod.js](https://github.com/dfcreative/mod) uncommon gives _13kb_ vs _16.5kb_ of browserify minified code (**~27%** compression).
+With minification of [mod.js](https://github.com/dfcreative/mod) uncommon gives _13kb_ vs _16.5kb_ of browserify (**~27%** compression).
 
 
 #### Use
