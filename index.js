@@ -1,8 +1,12 @@
 /**
- * @module uncommon
- *
  * @todo  tests
- * @todo Options: prefix, debug, comments, stub
+ * @todo  pass module prefix
+ * @todo  debug mode
+ * @todo  cut comments
+ * @todo  wrapper (umd/closure) + name (keep window minified, name untouched)
+ * @todo  exclude files
+ * @todo  externs - list of global reserved words
+ * @todo  humanized output
  */
 
 var util = require('util');
