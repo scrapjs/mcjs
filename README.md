@@ -12,7 +12,7 @@ Merge node modules into a single file.
 | [mod](https://github.com/dfcreative/mod) | _16.5kb_ | [_13kb_](https://github.com/dfcreative/mod/blob/master/dist/mod.js) | **~27%** |
 
 
-# Use
+## Use
 
 `$ npm install -g uncommonjs` or `$ npm install uncommonjs`
 
@@ -57,7 +57,7 @@ m_index = m_index_z;
 ```
 
 
-# API
+## API
 
 Point hust an entry file, and uncommon will get result with all dependencies included.
 
@@ -71,13 +71,13 @@ It’s best as a pre-closurecompiler task:
 ```
 
 
-# Motivation
+## Motivation
 
 As far closure compiler may quite easily expand any objects, if to merge modules into a single scope, which means to resolve global vars conflict and replace all `module.exports` and `require` calls, then you get one-scoped bundle, which closure compiler compresses the way better than separated by scopes browserified bundle. Besides, uncommon cuts out duplicated dependencies, unlike the browserify.
 
 Uncommon-js does the same task as a ClosureCompiler with `--process_commonjs_modules` flag, but it avoids creating of `goog.provide`'s and makes variables more human-readable.
 
 
-# License
+## License
 
 MIT

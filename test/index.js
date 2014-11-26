@@ -5,9 +5,11 @@
 //TODO: build chai
 
 
-//require(packageName)
-
-//require(path)
+var uncommon = require('../index');
 
 
-describe('')
+describe('Build', function(){
+	it('1 file no args build', function(){
+		uncommon();
+	});
+});

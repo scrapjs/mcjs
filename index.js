@@ -24,15 +24,28 @@ var esprima = require('esprima');
 var escodegen = require('escodegen');
 var escope = require('escope');
 var resolve = require('resolve');
+var browserify = require('browserify');
 
 
 /**
  * @module uncommonjs
- * @param {Browserify} b Browserify instance
+ *
+ * @param {Array|Stream} arg Whether list of files or stdin stream
+ *
+ * @return {[type]} [description]
  */
-var uc = module.exports = function(b){
-	b.pipeline
-	.get('dedupe')
+module.exports = function(arg, opts, cb){
+	var b = browserify(arg, opts);
+
+	var bundle, result;
+
+	b.on('error', function(a,b,c){
+		throw Error(a,b,c);
+	});
+
+
+	//start pipeline
+	b.pipeline.get('dedupe')
 
 	//prepare each module
 	.pipe(
@@ -47,15 +60,16 @@ var uc = module.exports = function(b){
 	.pipe(
 		concat(
 			function(list){
-				var result = processResult(list);
+				result = processResult(list);
 
-				//stdout result code
-				process.stdout.write(result);
+				bundle.emit('success', result);
 			}
 		)
 	);
 
-	var bundle = b.bundle(function(e,r){});
+
+	//Start browserify (bundle)
+	bundle = b.bundle();
 
 	return bundle;
 };
@@ -69,7 +83,7 @@ var prefix = 'm_';
 var globalVariables = {};
 
 /** module variable names and aliases keyed by module ids */
-var moduleVariableNames = {};
+var moduleVariableName = {};
 
 /** cache of module paths keyed by ids */
 var modulePath = {};
@@ -139,18 +153,18 @@ function processResult(list){
 
 	//declare all var module names beforehead
 	//in order to not get accessed undeclared
-	var declStr = '/* -------- Modules declarations -------- */\n';
+	var declStr = '/**\n * Modules declarations\n */\n';
 	declStr += 'var ';
 	list.forEach(function(item){
 		declStr += item.name + ', ';
 	});
-	declStr = declStr.slice(0, -2) + ';\n\n';
+	declStr = declStr.slice(0, -2) + ';\n';
 
 
 	//concat sources in the proper order of declaration
 	var result = declStr;
 	list.forEach(function(dep){
-		result += '\n\n/* ---------- Module ' + moduleVariableNames[dep.id] + ' ---------- */\n';
+		result += '\n\n\n/**\n * @module ' + moduleVariableName[dep.id] + '\n * @file ' + modulePath[dep.id] + ' \n */\n\n';
 		result += dep.source + '\n';
 	});
 
@@ -166,8 +180,8 @@ function processResult(list){
 		else modName = resolve.sync(modPath);
 
 		//replace require with var name
-		if (moduleVariableNames[modName]) {
-			return moduleVariableNames[modName];
+		if (moduleVariableName[modName]) {
+			return moduleVariableName[modName];
 		}
 
 		throw Error('Module to require isn’t found: `' + modName + '`');
@@ -191,21 +205,21 @@ function processModule(dep){
 	var src = dep.source;
 
 	//get module var name
-	var moduleVariableName = getModuleVarName(dep);
+	var moduleVarName = getModuleVarName(dep);
 
 	//save module name to declare it beforehead as a first-class var
-	dep.name = moduleVariableName;
-	moduleVariableNames[dep.id] = moduleVariableName;
-	moduleVariableNames[dep.file] = moduleVariableName;
+	dep.name = moduleVarName;
+	moduleVariableName[dep.id] = moduleVarName;
+	moduleVariableName[dep.file] = moduleVarName;
 	modulePath[dep.id] = dep.file;
-	// console.log('\n> Module', dep.id, ':', moduleVariableName);
+	// console.log('\n> Module', dep.id, ':', moduleVarName);
 
 
 	//replace `exports` & `module.exports` in code with `newName`
 	//stupid regex replacers are the way faster and simpler than esprima for that goal
-	src = src.replace(/\bmodule\.exports/g, moduleVariableName);
-	src = src.replace(/\bmodule\b\[\s*['"]exports['"]\s*\]/g, moduleVariableName);
-	src = src.replace(/\bexports\b/g, moduleVariableName);
+	src = src.replace(/\bmodule\.exports/g, moduleVarName);
+	src = src.replace(/\bmodule\b\[\s*['"]exports['"]\s*\]/g, moduleVarName);
+	src = src.replace(/\bexports\b/g, moduleVarName);
 
 	//replace all `module` calls with an empty object
 	//FIXME: ensure this is right
@@ -237,11 +251,10 @@ function processModule(dep){
 	//rename conflicting first-level vars
 	//its first-level vars declared within a module, not the global-scope vars
 	moduleVars.forEach(function(item){
-		// console.log('Variable:', item.name)
 
 		if (globalVariables[item.name]) {
 			//rename variable
-			var newName = moduleVariableName + '_' + item.name;
+			var newName = moduleVarName + '_' + item.name;
 
 			//replace each occurence
 			item.references.forEach(function(ref){
@@ -279,16 +292,21 @@ slug.charmap['-'] = '_';
  */
 //TODO: fuck all this stuff. Get rid of fucking name resolving via path. Use natural module names which should be available in deps resolver.
 function getModuleVarName(dep){
-	var name, modulePath;
+	var name;
 
-	//catch dirname after the last node_modules dirname, if any
+	//path to module
+	var modulePath;
+
 	var idx = dep.file.lastIndexOf('node_modules');
+
+	//catch path to dep after the last node_modules dirname, if any
 	if (idx >= 0){
 		var path = dep.file.slice(idx);
 		var matchResult = /node_modules[\/\\](.+)/.exec(path);
 		modulePath = matchResult[1];
 	}
 
+	//if no node_modules in path and dep is entry - get last dir as module path
 	else if (dep.entry) {
 		var matchResult = /([^\/\\]+)[\/\\][^\/\\]+$/.exec(dep.file);
 		modulePath = matchResult[1];

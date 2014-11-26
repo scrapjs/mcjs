@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 var fs = require('fs');
 var uc = require('../');
-var browserify = require('browserify');
 var path = require('path');
 
 process.stdout.on('error', process.exit);
@@ -27,9 +26,11 @@ var opts = require('nomnom')
 var basedir =  process.cwd() + '/' + opts.basedir;
 
 
+var bundle;
+
 //get stdin if no files passed
 if (!opts._.length) {
-	var b = browserify(process.stdin, {
+	bundle = uc(process.stdin, {
 		basedir: basedir
 	});
 }
@@ -40,18 +41,16 @@ else {
 		return path.resolve(filePath);
 	});
 
-	//get module deps stream
-	//TODO: replace this with laconic resolver (search requires manually)
-	var b = browserify(files);
+	bundle = uc(files);
 }
 
-//start pipeline
-var bundle = uc(b);
-
-
-b.on('error', errorExit);
+//stdout on success
+bundle.on('success', function(result){
+	process.stdout.write(result);
+});
 
 bundle.on('error', errorExit);
+
 
 function errorExit(err) {
 	if (err.stack) {
