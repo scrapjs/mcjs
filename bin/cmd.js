@@ -8,6 +8,7 @@ process.stdout.on('error', process.exit);
 
 
 //get options
+//TODO: extend options
 var opts = require('nomnom')
 // .option('debug', {
 // 	abbr: 'd',
@@ -40,6 +41,7 @@ else {
 	});
 
 	//get module deps stream
+	//TODO: replace this with laconic resolver (search requires manually)
 	var b = browserify(files);
 }
 

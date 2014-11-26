@@ -7,21 +7,18 @@
     "test": "test"
   },
   "dependencies": {
-    "browserify": "~5.*",
-    "concat-stream": "~1.4.6",
-    "escodegen": "~1.4.1",
-    "escope": "~1.0.1",
-    "esprima": "~1.2.2",
-    "map-stream": "~0.1.0",
-    "nomnom": "~1.8.0",
-    "slug": "~0.5.0",
-    "resolve": "~1.0.0"
-  },
-  "devDependencies": {
-    "node-noop": "0.0.1"
+    "browserify": "*",
+    "concat-stream": "*",
+    "escodegen": "*",
+    "escope": "*",
+    "esprima": "*",
+    "map-stream": "*",
+    "nomnom": "*",
+    "slug": "*",
+    "resolve": "*"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "bin": {
     "uncommon": "bin/cmd.js"
@@ -46,5 +43,8 @@
     "url": "https://github.com/dfcreative/uncommon/issues"
   },
   "homepage": "https://github.com/dfcreative/uncommon",
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "mocha": "~2.0.1"
+  }
 }
