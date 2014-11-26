@@ -1,7 +1,6 @@
-//TODO: get rid of browserify dep? Collect requirements statically
+﻿//TODO Standalone compilation with no module checking: window.Name = module (use case - weakset)
 
-//TODO Standalone compilation with no module checking: window.Name = module (use case - weakset)
-//TODO tests (browser-table)
+//TODO tests
 //TODO pass module prefix
 //TODO debug mode
 //TODO cut comments
@@ -27,6 +26,14 @@ var resolve = require('resolve');
 var browserify = require('browserify');
 
 
+/** processing options */
+var options = {
+	/** Prefix for module global vars */
+	prefix: 'm_'
+};
+
+
+
 /**
  * @module uncommonjs
  *
@@ -35,6 +42,8 @@ var browserify = require('browserify');
  * @return {[type]} [description]
  */
 module.exports = function(arg, opts, cb){
+	//TODO: extend self options with external opts passed
+
 	var b = browserify(arg, opts);
 
 	var bundle, result;
@@ -75,10 +84,6 @@ module.exports = function(arg, opts, cb){
 };
 
 
-/** Prefix for module global vars */
-var prefix = 'm_';
-
-
 /** global variables aliases dict: 'var1: var1, var2: var2alias' */
 var globalVariables = {};
 
@@ -90,7 +95,7 @@ var modulePath = {};
 
 
 /** catch `require` in code (too bad, I know, but the fastest relative to esprima) */
-var requireRe = /require\(['"]?([^'")]*)['"]?\)/g;
+var requireRe = /require\(\s*['"]([^'")]*)['"]\s*\)/g;
 
 
 
@@ -187,6 +192,18 @@ function processResult(list){
 		throw Error('Module to require isn’t found: `' + modName + '`');
 	});
 
+
+	//if there are runtime requires left
+	//append `require` function returning found modules' if any
+	//TODO
+	// if (/\brequire\b/.test(result)) {
+	// 	result =
+	// 	(function require(name){
+	// 		return m[name];
+	// 	}).toSource() + '\n'
+	// 	+ result;
+	// }
+
 	return result;
 }
 
@@ -271,7 +288,6 @@ function processModule(dep){
 		}
 	});
 
-
 	//rebuild source
 	//FIXME: include comments
 	//FIXME: include source map optionally
@@ -327,5 +343,5 @@ function getModuleVarName(dep){
 	//get rid of .js postfix
 	if (name.slice(-3) === '.js') name = name.slice(0,-3);
 
-	return prefix + name;
+	return options.prefix + name;
 }
