@@ -10,7 +10,7 @@ Merge node modules into a single file.
 | Package | Browserify | Uncommon | Compression |
 |----|----|----|----|
 | [mod](https://github.com/dfcreative/mod) | _16.5kb_ | [_13kb_](https://github.com/dfcreative/mod/blob/master/dist/mod.js) | **~27%** |
-
+[TODO: collect stats]
 
 ## Use
 
@@ -69,6 +69,11 @@ It’s best as a pre-closurecompiler task:
 "build": "uncommon index.js > dist/bundle.js"
 "min": "ccjs --compilation_level=ADVANCED_OPTIMIZATIONS dist/bundle.js > dist/bundle.min.js"
 ```
+
+
+## Options
+
+[TODO]
 
 
 ## Motivation

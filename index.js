@@ -94,7 +94,10 @@ var moduleVariableName = {};
 var modulePath = {};
 
 
-/** catch `require` in code (too bad, I know, but the fastest relative to esprima) */
+/**
+ * catch `require` in code (too bad, I know, but the fastest relative to esprima)
+ * Note that require accepts simple numbers also
+ */
 var requireRe = /require\(\s*['"]([^'")]*)['"]\s*\)/g;
 
 
@@ -117,10 +120,18 @@ function processResult(list){
 
 	//remove duplicates
 	.filter(function(item){
+		//dedupe found by browserify
 		if (item.dedupe) {
 			dupes[item.id] = item.dedupeIndex;
 			return false;
 		}
+		//search dupes manually in list
+		// for (var i = list.length; i--;){
+		// 	if (list[i] !== item && list[i].name === item.name) {
+		// 		console.log('dedupe', list[i], item)
+				// return false;
+		// 	}
+		// }
 		return true;
 	})
 
@@ -152,7 +163,7 @@ function processResult(list){
 	// list.forEach(function(item){
 	// 	item.source = item.source.slice(0,30) + '... ' + item.source.length;
 	// });
-	// console.log(dupes)
+	// console.log(list)
 	// console.log('concat:\n',util.inspect(list, {colors:true}));
 
 
