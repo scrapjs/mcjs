@@ -11,32 +11,11 @@ process.stdout.on('error', process.exit);
 //get options
 //TODO: extend options
 var opts = require('nomnom')
-.option('version', {
-	abbr: 'v',
-	help: 'Show version of uncommon.',
-	flag: true,
-	callback: function(){
-		var pkg = require('../package.json');
-		console.log(pkg.name + ' ' + pkg.version);
-		return process.exit(1);
-	}
-})
-.option('debug', {
-	abbr: 'd',
-	flag: true,
-	help: 'Provide source maps in output.'
-})
-.option('basedir', {
-	abbr: 'b',
-	flag: false,
-	metavar: 'PATH',
-	help: 'Setup base dir to resolve modules.'
-})
 .option('require', {
 	list: true,
 	abbr: 'r',
 	metavar: 'MODULE[:ALIAS]',
-	help: 'Provide a global `require`. Optionally set a module alias via colon.',
+	help: 'Provide `require()` for supplied modules. Optionally set an alias via colon.',
 	flag: false
 })
 .option('standalone', {
@@ -55,13 +34,34 @@ var opts = require('nomnom')
 	abbr: 'c',
 	help: 'Keep modules comments in export.',
 	flag: true,
-	default: true
+	default: false
 })
 // .option('wrapper', {
 // 	abbr: 'w',
 // 	metavar: 'VAL',
 // 	help: 'Wrap the result '
 // })
+// .option('debug', {
+// 	abbr: 'd',
+// 	flag: true,
+// 	help: 'Provide source maps in output.'
+// })
+.option('basedir', {
+	abbr: 'b',
+	flag: false,
+	metavar: 'PATH',
+	help: 'Setup base dir to resolve modules.'
+})
+.option('version', {
+	abbr: 'v',
+	help: 'Show version of uncommon.',
+	flag: true,
+	callback: function(){
+		var pkg = require('../package.json');
+		console.log(pkg.name + ' ' + pkg.version);
+		return process.exit(1);
+	}
+})
 .parse();
 
 

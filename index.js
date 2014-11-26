@@ -29,7 +29,7 @@ var browserify = require('browserify');
 /** processing options */
 var options = {
 	/** Prefix for module global vars */
-	prefix: 'm_'
+	prefix: '_m_'
 };
 
 
