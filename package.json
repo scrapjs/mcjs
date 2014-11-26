@@ -1,6 +1,6 @@
 {
   "name": "uncommonjs",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Merge CommonJS modules into a single file",
   "main": "index.js",
   "directories": {
