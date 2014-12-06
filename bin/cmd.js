@@ -23,6 +23,11 @@ var opts = require('nomnom')
 	metavar: 'NAME',
 	help: 'Generate an UMD bundle for the supplied export name.'
 })
+.option('wrap', {
+	abbr: 'w',
+	metavar: 'VAL',
+	help: 'Wrap an input with passed value, in place of %output%.'
+})
 .option('ignore', {
 	abbr: 'i',
 	metavar: 'MODULE',
@@ -84,7 +89,7 @@ else {
 		return path.resolve(filePath);
 	});
 
-	bundle = uc(files);
+	bundle = uc(files, opts);
 }
 
 //stdout on success

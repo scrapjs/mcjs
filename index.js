@@ -1,10 +1,13 @@
-﻿//TODO Standalone compilation with no module checking: window.Name = module (use case - weakset)
+﻿//TODO: simple -r provider to get nice test bundles via require global.
+
+//TODO Standalone compilation with no module checking: window.Name = module (use case - weakset);
+//TODO Concat stdin
+//TODO wrap final result into simple closure to provide closurecompiler scope
 
 //TODO tests
 //TODO pass module prefix
 //TODO debug mode
 //TODO cut comments
-//TODO wrapper (umd/closure) + name (keep window minified, name untouched)
 //TODO exclude files
 //TODO externs - list of global reserved words
 //TODO humanized output
@@ -70,6 +73,10 @@ module.exports = function(arg, opts, cb){
 		concat(
 			function(list){
 				result = processResult(list);
+
+				if (opts.wrap) {
+					result = opts.wrap.replace('%output%', result);
+				}
 
 				bundle.emit('success', result);
 			}
@@ -214,6 +221,12 @@ function processResult(list){
 	// 	}).toSource() + '\n'
 	// 	+ result;
 	// }
+
+
+	//for each standalone passed, create global unadvancedoptimizable var
+
+	//for each require passed, create an entry in require set
+
 
 	return result;
 }
