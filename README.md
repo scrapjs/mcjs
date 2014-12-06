@@ -10,7 +10,7 @@ Comparison of minified & gzipped results with simple/advanced compression.
 | Package | Browserify/Uncommon simple | Browserify/Uncommon advanced |
 |----|----|----|----|
 | [color-space](https://github.com/dfcreative/color-space) | _5.21kb / 4.8kb_ (7.8%) | _5kb / 4.4kb_ (12%) |
-| [emmy](https://github.com/dfcreative/color-space) | _4.18kb / _2.78kb_ (33.3%) | _4.02kb / 2.71kb_ (32.6%) |
+| [emmy](https://github.com/dfcreative/color-space) | _4.18kb / 2.78kb_ (33.3%) | _4.02kb / 2.71kb_ (32.6%) |
 | [mod](https://github.com/dfcreative/mod) | _16.5kb_ | [_13kb_](https://github.com/dfcreative/mod/blob/master/dist/mod.js) | **~27%** |
 
 

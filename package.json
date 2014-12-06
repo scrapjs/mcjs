@@ -1,7 +1,7 @@
 {
   "name": "uncommonjs",
   "version": "0.2.0",
-  "description": "Merge CommonJS modules into a single file",
+  "description": "Merge CommonJS modules into a single file with maximum possible compression",
   "main": "index.js",
   "directories": {
     "test": "test"
