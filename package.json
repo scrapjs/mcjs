@@ -6,6 +6,10 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "bin",
+    "index.js"
+  ],
   "dependencies": {
     "browserify": "*",
     "concat-stream": "*",
@@ -14,8 +18,7 @@
     "esprima": "*",
     "map-stream": "*",
     "nomnom": "*",
-    "slug": "*",
-    "resolve": "*"
+    "slug": "*"
   },
   "scripts": {
     "test": "mocha"
