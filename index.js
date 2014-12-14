@@ -120,13 +120,19 @@ function processResult(list){
 	//sort deps to include innermost first
 
 	//dupes aliases
-	var dupes={};
+	var dupes={},
+
+	//dict of items by ids
+		items={};
 
 	//filter list of deps
 	list = list
 
 	//remove duplicates
 	.filter(function(item){
+		//create dict of modules by ids
+		items[item.id] = item;
+
 		//dedupe found by browserify
 		if (item.dedupe) {
 			dupes[item.id] = item.dedupeIndex;
@@ -158,6 +164,9 @@ function processResult(list){
 	function hasDep(a, b){
 		for (var name in a.deps){
 			if (a.deps[name] === b.id || dupes[a.deps[name]] === b.id) return true;
+
+			//find inner dep
+			if ( hasDep(items[a.deps[name]], b)) return true;
 		}
 		return false;
 	}
