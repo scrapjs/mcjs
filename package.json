@@ -18,7 +18,8 @@
     "esprima": "*",
     "map-stream": "*",
     "nomnom": "*",
-    "slug": "*"
+    "slug": "*",
+    "resolve": "~1.0.0"
   },
   "scripts": {
     "test": "mocha"
