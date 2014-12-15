@@ -138,41 +138,29 @@ function processResult(list){
 			dupes[item.id] = item.dedupeIndex;
 			return false;
 		}
-		//search dupes manually in list
-		// for (var i = list.length; i--;){
-		// 	if (list[i] !== item && list[i].name === item.name) {
-		// 		console.log('dedupe', list[i], item)
-				// return false;
-		// 	}
-		// }
+
 		return true;
-	})
-
-	//sort deps to declare in proper order
-	.sort(function(a,b){
-		//if includes one as an other’s dep - declare independent first
-		if (hasDep(a, b)) return 1;
-		if (hasDep(b, a)) return -1;
-
-		//calc number of deps, return smaller
-		//suppose that less-dependent module is better to be declared first
-		if (depNumber(a) > depNumber(b)) return 1;
-		else return -1;
 	});
 
-	//whether a-dep depends on b
-	function hasDep(a, b){
-		for (var name in a.deps){
-			if (a.deps[name] === b.id || dupes[a.deps[name]] === b.id) return true;
+	//calc weights
+	list.forEach(calcWeight);
 
-			//find inner dep
-			if ( hasDep(items[a.deps[name]], b)) return true;
+
+	//sort items by weights
+	list.sort(function(a, b){
+		return a.weight > b.weight ? 1 : -1;
+	});
+
+
+	//calc dep weight for the item
+	function calcWeight(item){
+		if (item.weight) return item.weight;
+		var w = 1;
+		for (var name in item.deps) {
+			w += calcWeight(items[item.deps[name]]);
 		}
-		return false;
-	}
-
-	function depNumber(a){
-		return Object.keys(a.deps).length;
+		item.weight = w;
+		return w;
 	}
 
 
