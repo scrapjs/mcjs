@@ -1,19 +1,17 @@
-﻿//TODO: simple -r provider to get nice test bundles via require global.
-
+﻿//TODO UMD
 //TODO Standalone compilation with no module checking: window.Name = module (use case - weakset);
 //TODO Concat stdin
-//TODO wrap final result into simple closure to provide closurecompiler scope
 
 //TODO tests
 //TODO pass module prefix
-//TODO debug mode
-//TODO cut comments
+//TODO debug mode (sourcemaps)
+//TODO uncut comments
 //TODO exclude files
 //TODO externs - list of global reserved words
 //TODO humanized output
 //TODO same options as browserify, especially -r
 
-//FIXME provide require function at the top for runtime calculations
+//FIXME provide require function at the top for runtime require calls
 
 
 var util = require('util');

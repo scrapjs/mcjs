@@ -1,92 +1,80 @@
-# Uncommon-js [![deps](https://david-dm.org/dfcreative/color-ranger.svg)](https://david-dm.org/dfcreative/color-ranger) <a href="UNLICENSE"><img src="http://upload.wikimedia.org/wikipedia/commons/6/62/PD-icon.svg" width="20"/></a>
+# MCJS [![Build Status](https://travis-ci.org/dfcreative/mcjs.svg?branch=master)](https://travis-ci.org/dfcreative/mcjs) [![Code Climate](https://codeclimate.com/github/dfcreative/mcjs/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/mcjs) [![deps](https://david-dm.org/dfcreative/mcjs.svg)](https://david-dm.org/dfcreative/mcjs) <a href="UNLICENSE"><img src="http://upload.wikimedia.org/wikipedia/commons/6/62/PD-icon.svg" width="20"/></a>
 
-Merge node modules into a single file, replace all requires with global variables. It gains maximum compression in browserifying modules.
+**M**erge **C**ommon **JS** modules into a single module.
 
 
 ## Some stats
 
-Comparison of minified & gzipped results with simple/advanced compression.
+Compare minified sources (via closure compiler):
 
-| Package | Browserify/Uncommon simple | Browserify/Uncommon advanced |
-|----|----|----|----|
-| [color-space](https://github.com/dfcreative/color-space) | _5.21kb / 4.8kb_ (7.8%) | _5kb / 4.4kb_ (12%) |
-| [emmy](https://github.com/dfcreative/color-space) | _4.18kb / 2.78kb_ (33.3%) | _4.02kb / 2.71kb_ (32.6%) |
-| [mod](https://github.com/dfcreative/mod) | _16.5kb_ | [_13kb_](https://github.com/dfcreative/mod/blob/master/dist/mod.js) | **~27%** |
+| Package | Browserify | MCJS |  |
+|---|---|---|---|---|
+| [color-space](https://github.com/dfcreative/color-space) | 5kb | 4.4kb | 12% |
+| [mcjs](https://github.com/dfcreative/color-space) | 4.02kb | 2.71kb | 32.6% |
+| [mod](https://github.com/dfcreative/mod) | 16.5kb | 13kb | 27% |
 
 
-## Use
+# Use
 
-`$ npm install -g uncommonjs` or `$ npm install uncommonjs`
+`$ npm install -g mcjs`
 
-a.js:
+The following files:
+
+_a.js_:
 
 ```js
 var z = 123;
-module.exports = {
-	x: 1,
-	y: z
-};
+module.exports = z;
 ```
 
-index.js:
+_index.js_:
 ```js
 var a = require('a');
-var z = 456;
-
-exports = z;
+module.exports = a;
 ```
 
-Run uncommon:
+Run `mcjs`:
 
-`$ uncommon index.js > bundle.js`
+`$ mcjs index.js`
 
 
-Resulting bundle.js:
+Result:
 
 ```js
 var m_a, m_index;
 
 var z = 123;
-m_a = {
-	x:1,
-	y:z
-};
+m_a = z;
 
 var a = m_a;
-var m_index_z = 456;
-
-m_index = m_index_z;
+module.exports = a;
 ```
 
-
-## API
-
-Pass an entry file, and uncommon will output result with all dependencies included.
-
-`$ uncommon index.js > bundle.js` or `$ cat index.js | uncommon > bundle.js`
+_MCJS_ produces a single module with all required modules declared as top-level variables and according require calls replaced with them.
 
 
-You can wrap the result as `uncommon --wrap='before %output% after'`, to apply your own wrapper, like `uncommon -w='window.Plugin=Plugin;%output%'`.
+# API
+
+Pass a file or stdin to mcjs and it will produce the resulting module.
+
+`$ mcjs index.js > bundle.js` or `$ cat index.js | mcjs > bundle.js`
 
 
-It’s best as a pre-closurecompiler task:
+### --wrap, -w
 
-```
-"build": "uncommon index.js > dist/bundle.js"
-"min": "ccjs --compilation_level=ADVANCED_OPTIMIZATIONS dist/bundle.js > dist/bundle.min.js"
-```
+You can wrap the result as `mcjs --wrap='before %output% after'`, to apply your own wrapper, like `mcjs -w='window.Plugin=Plugin;%output%'`.
 
+### --standalone, -s
 
-## Options
-
-[TODO: wrap, ...]
+### --
 
 
-## Motivation
 
-As far closure compiler may quite easily expand any objects, if to merge modules into a single scope, which means to resolve global vars conflict and replace all `module.exports` and `require` calls, then you get one-scoped bundle, which closure compiler compresses the way better than separated by scopes browserified bundle. Besides, uncommon cuts out duplicated dependencies, unlike the browserify.
+# Motivation
 
-Uncommon-js does the same task as a ClosureCompiler with `--process_commonjs_modules` flag, but it avoids creating of `goog.provide`'s and makes variables more human-readable.
+As far closure compiler can quite easily expand any objects, if to merge modules into a single scope, which means to resolve global vars conflict and replace all `module.exports` and `require` calls, then you get one-scoped bundle, which closure compiler compresses the way better than separated by scopes browserified bundle.
+
+Mcjs does the same task as a ClosureCompiler with `--process_commonjs_modules` flag, but avoids creating of `goog.provide`'s and makes variables more human-readable.
 
 
-[![NPM](https://nodei.co/npm/uncommonjs.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/uncommonjs/)
+[![NPM](https://nodei.co/npm/mcjs.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/mcjs/)
