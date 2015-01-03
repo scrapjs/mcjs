@@ -64,10 +64,6 @@ Pass a file or stdin to mcjs and it will produce the resulting module.
 
 You can wrap the result as `mcjs --wrap='before %output% after'`, to apply your own wrapper, like `mcjs -w='window.Plugin=Plugin;%output%'`.
 
-### --standalone, -s
-
-### --
-
 
 
 # Motivation
