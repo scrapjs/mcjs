@@ -1,15 +1,8 @@
-﻿//TODO UMD
-//TODO Standalone compilation with no module checking: window.Name = module (use case - weakset);
-//TODO Concat stdin
-
-//TODO tests
+﻿//TODO tests
 //TODO pass module prefix
 //TODO debug mode (sourcemaps)
 //TODO uncut comments
-//TODO exclude files
-//TODO externs - list of global reserved words
 //TODO humanized output
-//TODO same options as browserify, especially -r
 
 //FIXME provide require function at the top for runtime require calls
 
@@ -30,7 +23,7 @@ var browserify = require('browserify');
 /** processing options */
 var options = {
 	/** Prefix for module global vars */
-	prefix: '_m_'
+	prefix: 'm_'
 };
 
 
@@ -43,9 +36,7 @@ var options = {
  * @return {[type]} [description]
  */
 module.exports = function(arg, opts, cb){
-	//TODO: extend self options with external opts passed
-
-	var b = browserify(arg, opts);
+	var b = browserify(arg);
 
 	var bundle, result;
 
@@ -71,10 +62,6 @@ module.exports = function(arg, opts, cb){
 		concat(
 			function(list){
 				result = processResult(list);
-
-				if (opts.wrap) {
-					result = opts.wrap.replace('%output%', result);
-				}
 
 				bundle.emit('success', result);
 			}
@@ -119,15 +106,19 @@ function processResult(list){
 
 	//dupes aliases
 	var dupes={},
-
-	//dict of items by ids
-		items={};
+		//dict of items by ids
+		items={},
+		//entry item
+		entry;
 
 	//filter list of deps
 	list = list
 
 	//remove duplicates
 	.filter(function(item){
+		//save entry item
+		if (item.entry) entry = item;
+
 		//create dict of modules by ids
 		items[item.id] = item;
 
@@ -140,9 +131,9 @@ function processResult(list){
 		return true;
 	});
 
+
 	//calc weights
 	list.forEach(calcWeight);
-
 
 	//sort items by weights
 	list.sort(function(a, b){
@@ -150,7 +141,7 @@ function processResult(list){
 	});
 
 
-	//calc dep weight for the item
+	//calc dep weight as a sum of dep weights + 1
 	function calcWeight(item){
 		if (item.weight) return item.weight;
 		var w = 1;
@@ -171,7 +162,7 @@ function processResult(list){
 
 	//declare all var module names beforehead
 	//in order to not get accessed undeclared
-	var declStr = '/**\n * Modules declarations\n */\n';
+	var declStr = '/**\n * Modules\n */\n';
 	declStr += 'var ';
 	list.forEach(function(item){
 		declStr += item.name + ', ';
@@ -179,7 +170,7 @@ function processResult(list){
 	declStr = declStr.slice(0, -2) + ';\n';
 
 
-	//concat sources in the proper order of declaration
+	//concat sources in the proper order
 	var result = declStr;
 	list.forEach(function(dep){
 		result += '\n\n\n/**\n * @module ' + moduleVariableName[dep.id] + '\n * @file ' + modulePath[dep.id] + ' \n */\n\n';
@@ -205,23 +196,9 @@ function processResult(list){
 		throw Error('Module to require isn’t found: `' + modName + '`');
 	});
 
-
-	//if there are runtime requires left
-	//append `require` function returning found modules' if any
-	//TODO
-	// if (/\brequire\b/.test(result)) {
-	// 	result =
-	// 	(function require(name){
-	// 		return m[name];
-	// 	}).toSource() + '\n'
-	// 	+ result;
-	// }
-
-
-	//for each standalone passed, create global unadvancedoptimizable var
-
-	//for each require passed, create an entry in require set
-
+	//add final exports
+	result += '\n\n/** Main export */\n';
+	result += '\nmodule.exports = ' + entry.name + ';\n';
 
 	return result;
 }

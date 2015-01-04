@@ -1,50 +1,18 @@
 #!/usr/bin/env node
 var fs = require('fs');
-var uc = require('../');
+var uc = require('./');
 var path = require('path');
-
-var version = '0.1.x';
 
 process.stdout.on('error', process.exit);
 
 
 //get options
-//TODO: extend options
 var opts = require('nomnom')
-.option('require', {
-	list: true,
-	abbr: 'r',
-	metavar: 'MODULE[:ALIAS]',
-	help: 'Provide `require()` for supplied modules. Optionally set an alias via colon.',
-	flag: false
-})
-.option('standalone', {
-	abbr: 's',
-	metavar: 'NAME',
-	help: 'Generate an UMD bundle for the supplied export name.'
-})
-.option('wrap', {
-	abbr: 'w',
-	metavar: 'VAL',
-	help: 'Wrap an input with passed value, in place of %output%.'
-})
-.option('ignore', {
-	abbr: 'i',
-	metavar: 'MODULE',
-	help: 'Don’t include supplied modules/files to bundle.',
-	flag: false,
-	list: true
-})
-.option('comments', {
-	abbr: 'c',
-	help: 'Keep modules comments in export.',
-	flag: true,
-	default: false
-})
-// .option('wrapper', {
-// 	abbr: 'w',
-// 	metavar: 'VAL',
-// 	help: 'Wrap the result '
+// .option('comments', {
+// 	abbr: 'c',
+// 	help: 'Keep modules comments in export.',
+// 	flag: true,
+// 	default: false
 // })
 // .option('debug', {
 // 	abbr: 'd',
@@ -55,7 +23,7 @@ var opts = require('nomnom')
 	abbr: 'b',
 	flag: false,
 	metavar: 'PATH',
-	help: 'Setup base dir to resolve modules.'
+	help: 'Setup relative base dir to resolve modules.'
 })
 .option('version', {
 	abbr: 'v',

@@ -2,25 +2,30 @@
 
 **M**erge **C**ommon **JS** modules into a single module.
 
+_MCJS_ produces a single module with all inner requirements merged into a single scope and names conflicts resolved. That way is avoided any code overhead and gained maximum compressability.
+
 
 ## Some stats
 
 Compare minified sources (via closure compiler):
 
-| Package | Browserify | MCJS |  |
+| Package | Browserify | MCJS |
 |---|---|---|---|---|
 | [color-space](https://github.com/dfcreative/color-space) | 5kb | 4.4kb | 12% |
-| [mcjs](https://github.com/dfcreative/color-space) | 4.02kb | 2.71kb | 32.6% |
-| [mod](https://github.com/dfcreative/mod) | 16.5kb | 13kb | 27% |
 
 
-# Use
+# Usage
+
+##### 1. Install
 
 `$ npm install -g mcjs`
 
-The following files:
 
-_a.js_:
+##### 2. Build
+
+Files:
+
+_dep.js_:
 
 ```js
 var z = 123;
@@ -29,16 +34,18 @@ module.exports = z;
 
 _index.js_:
 ```js
-var a = require('a');
+var a = require('./dep');
 module.exports = a;
 ```
 
-Run `mcjs`:
+Pass _index.js_ to `mcjs` and it will produce the result:
 
-`$ mcjs index.js`
+`$ mcjs index.js > bundle.js`
+or
+`$ cat index.js | mcjs > bundle.js`
 
 
-Result:
+Resulting _bundle.js_:
 
 ```js
 var m_a, m_index;
@@ -50,27 +57,27 @@ var a = m_a;
 module.exports = a;
 ```
 
-_MCJS_ produces a single module with all required modules declared as top-level variables and according require calls replaced with them.
 
+##### 3. Post-process
 
-# API
+You can then wrap _bundle.js_ with [UMD](https://github.com/ForbesLindesay/umd) for standalone build:
 
-Pass a file or stdin to mcjs and it will produce the resulting module.
+```
+$ cat bundle.js | umd stansalone_name -c > bundle.js
+```
 
-`$ mcjs index.js > bundle.js` or `$ cat index.js | mcjs > bundle.js`
+And minify with [closurecompiler](https://github.com/dcodeIO/ClosureCompiler.js) with better compression:
 
-
-### --wrap, -w
-
-You can wrap the result as `mcjs --wrap='before %output% after'`, to apply your own wrapper, like `mcjs -w='window.Plugin=Plugin;%output%'`.
-
+```
+$ ccjs bundle.js --language_in=ECMASCRIPT5 > bundle.min.js
+```
 
 
 # Motivation
 
-As far closure compiler can quite easily expand any objects, if to merge modules into a single scope, which means to resolve global vars conflict and replace all `module.exports` and `require` calls, then you get one-scoped bundle, which closure compiler compresses the way better than separated by scopes browserified bundle.
+As far closure compiler can expand any objects, if to merge modules into a single scope, which means to resolve global vars conflict and to replace all `module.exports` and `require` calls, then you get one-scoped bundle, which closure compiler compresses the way better than separated by scopes browserified/compiled bundle.
 
-Mcjs does the same task as a ClosureCompiler with `--process_commonjs_modules` flag, but avoids creating of `goog.provide`'s and makes variables more human-readable.
+_Mcjs_ does the same task as a ClosureCompiler with `--process_commonjs_modules` flag, but avoids creating of `goog.provide`'s and makes variables more human-readable.
 
 
 [![NPM](https://nodei.co/npm/mcjs.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/mcjs/)

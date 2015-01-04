@@ -1,13 +1,13 @@
 {
   "name": "mcjs",
   "version": "0.2.4",
-  "description": "Merge CommonJS modules into a single file",
+  "description": "Merge CommonJS modules into a single file. Overhead-free.",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "files": [
-    "bin",
+    "cli.js",
     "index.js"
   ],
   "dependencies": {
@@ -25,7 +25,7 @@
     "test": "mocha"
   },
   "bin": {
-    "mcjs": "bin/cmd.js"
+    "mcjs": "cli.js"
   },
   "repository": {
     "type": "git",
@@ -33,17 +33,23 @@
   },
   "keywords": [
     "browserify",
+    "npm",
     "bundle",
     "build",
     "require",
     "module",
+    "package",
+    "browser-pack",
+    "module-deps",
     "commonjs",
     "cjs",
+    "cjsc",
     "uncommon",
     "uncommonjs",
     "webpack",
     "merge modules",
-    "merge"
+    "merge",
+    "compile"
   ],
   "author": {
     "name": "Deema Ywanov",
