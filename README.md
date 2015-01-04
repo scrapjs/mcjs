@@ -2,7 +2,7 @@
 
 **M**erge **C**ommon **JS** modules into a single module.
 
-_MCJS_ produces a single module with all inner requirements merged into a single scope and names conflicts resolved. That way is avoided any code overhead and gained maximum compressability.
+_MCJS_ produces a single module with all inner requirements merged into a single scope with resolved names conflicts. That way it gains maximal compressability and minimal overhead.
 
 
 ## Some stats
@@ -10,8 +10,8 @@ _MCJS_ produces a single module with all inner requirements merged into a single
 Compare minified sources (via closure compiler):
 
 | Package | Browserify | Webpack | Component | MCJS |
-|---|---|---|---|---|
-| [color-space](https://github.com/dfcreative/color-space) | 5kb | 4.4kb | 12% |
+|---|---|---|---|---|---|
+| [color-space](https://github.com/dfcreative/color-space) | 5kb | 4.4kb | | | 12% |
 
 
 # Usage
