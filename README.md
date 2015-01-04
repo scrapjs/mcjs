@@ -11,7 +11,7 @@ Compare minified sources (via closure compiler):
 
 | Package | Browserify | Webpack | Component | MCJS | |
 |---|---|---|---|---|---|
-| [color-space](https://github.com/dfcreative/color-space) | 5kb | 4.4kb |  |  | 12% |
+| [color-space](https://github.com/dfcreative/color-space) | 5kb |  |  | 4.4kb | 12% |
 
 
 # Usage
