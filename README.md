@@ -9,7 +9,7 @@ _MCJS_ produces a single module with all inner requirements merged into a single
 
 Compare minified sources (via closure compiler):
 
-| Package | Browserify | MCJS |
+| Package | Browserify | Webpack | Component | MCJS |
 |---|---|---|---|---|
 | [color-space](https://github.com/dfcreative/color-space) | 5kb | 4.4kb | 12% |
 
