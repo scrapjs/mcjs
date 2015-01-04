@@ -1,6 +1,6 @@
 {
   "name": "mcjs",
-  "version": "0.2.4",
+  "version": "1.0.0",
   "description": "Merge CommonJS modules into a single file. Overhead-free.",
   "main": "index.js",
   "directories": {
