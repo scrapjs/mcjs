@@ -2,16 +2,16 @@
 
 **M**erge **C**ommon **JS** modules into a single module.
 
-_MCJS_ produces a single module with all inner requirements merged into a single scope with resolved names conflicts. That way it gains maximal compressability and minimal overhead.
+_MCJS_ produces a single module with all inner requirements merged into a single scope with resolved names conflicts. That way it gains maximum compressability and minimum overhead.
 
 
 ## Some stats
 
 Compare minified sources (via closure compiler):
 
-| Package | Browserify | Webpack | Component | MCJS |
+| Package | Browserify | Webpack | Component | MCJS | |
 |---|---|---|---|---|---|
-| [color-space](https://github.com/dfcreative/color-space) | 5kb | 4.4kb | | | 12% |
+| [color-space](https://github.com/dfcreative/color-space) | 5kb | 4.4kb |  |  | 12% |
 
 
 # Usage
@@ -64,7 +64,7 @@ You can wrap _bundle.js_ with [umd](https://github.com/ForbesLindesay/umd) for s
 $ cat bundle.js | umd stansalone_name -c > bundle.js
 ```
 
-Also you can minify with [closurecompiler](https://github.com/dcodeIO/ClosureCompiler.js) with maximum compression:
+Also you can minify with [closurecompiler](https://github.com/dcodeIO/ClosureCompiler.js) for maximum compression:
 
 ```
 $ ccjs bundle.js --language_in=ECMASCRIPT5 > bundle.min.js
