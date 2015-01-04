@@ -16,14 +16,12 @@ Compare minified sources (via closure compiler):
 
 # Usage
 
-##### 1. Install
+#### Install
 
 `$ npm install -g mcjs`
 
 
-##### 2. Build
-
-Files:
+#### Build
 
 _dep.js_:
 
@@ -58,15 +56,15 @@ module.exports = a;
 ```
 
 
-##### 3. Post-process
+#### Post-process
 
-You can then wrap _bundle.js_ with [UMD](https://github.com/ForbesLindesay/umd) for standalone build:
+You can wrap _bundle.js_ with [umd](https://github.com/ForbesLindesay/umd) for standalone build:
 
 ```
 $ cat bundle.js | umd stansalone_name -c > bundle.js
 ```
 
-And minify with [closurecompiler](https://github.com/dcodeIO/ClosureCompiler.js) with better compression:
+Also you can minify with [closurecompiler](https://github.com/dcodeIO/ClosureCompiler.js) with maximum compression:
 
 ```
 $ ccjs bundle.js --language_in=ECMASCRIPT5 > bundle.min.js
