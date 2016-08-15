@@ -3,6 +3,7 @@
 //TODO debug mode (sourcemaps)
 //TODO uncut comments
 //TODO humanized output
+//TODO online compressor with banner
 
 //FIXME provide require function at the top for runtime require calls
 

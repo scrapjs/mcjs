@@ -49,7 +49,9 @@
     "webpack",
     "merge modules",
     "merge",
-    "compile"
+    "compile",
+    "small",
+    "powerbuild"
   ],
   "author": {
     "name": "Deema Ywanov",

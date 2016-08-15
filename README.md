@@ -2,7 +2,12 @@
 
 **M**erge **C**ommon **JS** modules into a single module.
 
-_MCJS_ produces a single module with all inner requirements merged into a single scope with resolved name conflicts. That way it gains maximum compressability and minimal overhead.
+_MCJS_ produces a single module with all inner requirements merged into a single scope with resolved name conflicts. That way it gains maximum compressability and minimal overhead. Smaller than [browserify](), [component](), [webpack](), [powerbuild](), [small](https://www.npmjs.com/package/small).
+
+## Features
+
+* Able to map modules, for example, to make a jquery build with `require('css')` replaced with `$.css`, project-wide, unlike browserify transforms
+* Merge fully compatible modules, e.g. `replace emitter-component with component-emitter`
 
 
 ## Some stats
@@ -12,6 +17,8 @@ Compare minified sources (via closure compiler):
 | Package | Browserify | Webpack | Component | MCJS | Effect |
 |---|---|---|---|---|---|
 | [color-space](https://github.com/dfcreative/color-space) | 5kb |  |  | 4.4kb | 12% |
+| [mcjs](https://github.com/dfcreative/color-space) | 4.02kb |  |  | 2.71kb | 32.6% |
+| [mod](https://github.com/dfcreative/mod) | 16.5kb |  |  | 13kb | 27% |
 
 
 # Usage
