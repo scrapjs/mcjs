@@ -4,47 +4,18 @@
 
 //TODO: build chai
 
-
-var mcjs = require('..');
-
-
-describe('Options', function(){
-	it.skip('mcjs', function(){
-		mcjs();
-	});
-
-	//ignore module to include (provide global getter)
-	it.skip('-i', function(){
-
-	});
-
-	//keep comments in exported file
-	it.skip('-c', function(){
-
-	});
-
-	//provide source maps for includes
-	it.skip('-d', function(){
-
-	});
-
-	//show help
-	it.skip('-h', function(){
-
-	});
-
-	//show version of mcjs
-	it.skip('-v', function(){
-
-	});
-
-	//basedir for input stream (default is currDir)
-	it.skip('-b', function(){
-
-	});
-});
+const t = require('tap');
+const mcjs = require('../plugin');
+const browserify = require('browserify');
 
 
-describe('Edge cases', function(){
 
-});
+var b = browserify();
+b.add(__dirname + '/1.js');
+// b.add(__dirname + '/../../plotly.js/');
+b.plugin(mcjs);
+
+b.bundle(function (err, src) {
+	if (err) console.error(err.message)//t.fail(err);
+	// vm.runInNewContext(src, { console: { log: log } });
+}, {list: true});

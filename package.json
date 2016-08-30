@@ -6,20 +6,15 @@
   "directories": {
     "test": "test"
   },
-  "files": [
-    "cli.js",
-    "index.js"
-  ],
   "dependencies": {
-    "browserify": "*",
-    "concat-stream": "*",
-    "escodegen": "*",
-    "escope": "*",
-    "esprima": "*",
+    "acorn": "^3.3.0",
+    "concat-stream": "^1.5.1",
+    "detective": "^4.3.1",
+    "escodegen": "^1.8.1",
+    "escope": "^3.6.0",
     "map-stream": "*",
     "nomnom": "*",
-    "slug": "*",
-    "resolve": "^1.0.0"
+    "replace-requires": "^1.0.3"
   },
   "scripts": {
     "test": "mocha"
@@ -62,8 +57,5 @@
     "url": "https://github.com/dfcreative/mcjs/issues"
   },
   "homepage": "https://github.com/dfcreative/mcjs",
-  "readmeFilename": "README.md",
-  "devDependencies": {
-    "mocha": "~2.0.1"
-  }
+  "readmeFilename": "README.md"
 }
