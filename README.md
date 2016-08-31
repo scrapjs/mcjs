@@ -30,8 +30,6 @@ browserify index.js -p mcjs/plugin
 ```
 
 
-#### Build
-
 _dep.js_:
 
 ```js
@@ -44,13 +42,6 @@ _index.js_:
 var a = require('./dep');
 module.exports = a;
 ```
-
-Run `mcjs`:
-
-`$ mcjs index.js > bundle.js`
-or
-`$ cat index.js | mcjs > bundle.js`
-
 
 Resulting _bundle.js_:
 
