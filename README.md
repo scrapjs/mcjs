@@ -7,9 +7,9 @@ _MCJS_ produces a single module with all inner requirements merged into a single
 
 ## Some stats
 
-Compare minified sources (via closure compiler):
+Compare minified gzip-sizes:
 
-| Package | Browserify | [Bundle-collapser](https://npmjs.org/package/bundle-collapser) | MCJS | Effect |
+| Package | Browserify | [bundle-collapser](https://npmjs.org/package/bundle-collapser) | MCJS | Effect |
 |---|---|---|---|---|---|
 | [plotly.js](https://github.com/plotly/plotly.js) | 516kb | 508kb | 494kb | 4.5% |
 | [color-space](https://github.com/dfcreative/color-space) | 5kb |  | 4.4kb | 12% |
