@@ -10,7 +10,7 @@ const through = require('through2');
 const replaceRequire = require('replace-requires');
 const detective = require('detective');
 const slug = require('slug');
-const esprima = require('acorn');
+const esprima = require('espree');
 const escope = require('escope');
 const gen = require('escodegen');
 const path = require('path');
@@ -67,34 +67,49 @@ module.exports = function (b, opts) {
 		//FIXME: there are cases of scopes, where function receives argument named `module` or `exports`, or a pattern like `let {module, exports} = obj`
 		//it should work, but we have to test that
 		//FIXME: there are cases where module/exports are disguised in some way, i.e. unable to eval statically, like out = module.exports; out.x = 123;
-		dep.source = dep.source.replace(/\bmodule\.exports/g, moduleVarName);
-		dep.source = dep.source.replace(/\bmodule\b\[\s*'exports'\s*\]/g, moduleVarName);
-		dep.source = dep.source.replace(/\bmodule\b\[\s*"exports"\s*\]/g, moduleVarName);
-		dep.source = dep.source.replace(/\bmodule\b\[\s*`exports`\s*\]/g, moduleVarName);
-		dep.source = dep.source.replace(/\bexports\b/g, moduleVarName);
+		dep.source = dep.source.replace(/\bmodule\.exports\s*=(?!=)/g, moduleVarName + '=');
+		dep.source = dep.source.replace(/\bmodule\b\[\s*'exports'\s*\]\s*=(?!=)/g, moduleVarName + '=');
+		dep.source = dep.source.replace(/\bmodule\b\[\s*"exports"\s*\]\s*=(?!=)/g, moduleVarName + '=');
+		dep.source = dep.source.replace(/\bmodule\b\[\s*`exports`\s*\]\s*=(?!=)/g, moduleVarName + '=');
+		dep.source = dep.source.replace(/\bexports\s*=(?!=)/g, moduleVarName + '=');
 
 		//replace all `module` calls with an empty object
 		//basically that is what browserify puts as `module`
 		//FIXME: make this cover evaluated export expressions
-		dep.source = dep.source.replace(/\bmodule\b/g, '({})');
+		// dep.source = dep.source.replace(/\bmodule\b/g, '({})');
 
 		return dep;
 	}
 
 	//resolve require calls - insert module paths instead of module names
 	function replaceRequires (dep) {
-		let {strings, expressions, nodes} = detective.find(dep.source, { nodes: false });
+		//node-detective way: outdated acorn shits the bed
+		// try {
+		// 	let {strings, expressions, nodes} = detective.find(dep.source, {
+		// 		nodes: false,
+		// 		parser: esprima
+		// 	});
+		// } catch (e) {
+		// 	// console.log(dep);
+		// 	throw e;
+		// }
+		// //FIXME: how to fix expression require calls? Throw an error?
+		// if (expressions.length) {
+		// 	throw Error(`Cannot require \`${expressions[0]}\` in ${dep.file}`);
+		// }
 
-		//FIXME: how to fix expression require calls? Throw an error?
-		if (expressions.length) throw Error(`Cannot optimize require \`${expressions[0]}\` in ${dep.file}`);
+		// let deps = {};
 
-		let deps = {};
+		// Object.keys(dep.deps).forEach(name => {
+		// 	deps[name] = getModuleVarName(dep.deps[name]);
+		// });
 
-		Object.keys(dep.deps).forEach(name => {
-			deps[name] = getModuleVarName(dep.deps[name]);
+		// dep.source = replaceRequire(dep.source, deps);
+
+		//regexp version
+		dep.source = dep.source.replace(/require\(\s*['"`]([^'"`)]*)['"`]\s*\)/g, (requireStr, modPath, idx, fullSrc) => {
+			return getModuleVarName(dep.deps[modPath]);
 		});
-
-		dep.source = replaceRequire(dep.source, deps);
 
 		return dep
 	}
@@ -102,7 +117,13 @@ module.exports = function (b, opts) {
 
 	function prefixFirstLevelVars (dep) {
 		//Resolve global modules variables conflict - analyze scopes
-		let ast = esprima.parse(dep.source);
+		let ast;
+
+		try {
+			ast = esprima.parse(dep.source);
+		} catch (e) {
+			throw e;
+		}
 
 		//optimistic flag causes getting references for variables (places where they’re met)
 		let moduleVars = escope.analyze(ast, {optimistic: true}).scopes[0].variables;
@@ -130,6 +151,7 @@ module.exports = function (b, opts) {
 		//FIXME: include comments
 		//FIXME: include source map optionally
 		dep.source = gen.generate(ast);
+		dep.source = '\nvar module = {exports: {}};\n' + dep.source;
 
 		return dep;
 	}
@@ -150,6 +172,7 @@ module.exports = function (b, opts) {
 		//calc dep weight as a sum of dep weights + 1
 		function calcWeight(item) {
 			if (item.weight != null) return item.weight;
+			item.weight = 1;
 			let w = 1;
 			for (let name in item.deps) {
 				w += calcWeight(items[item.deps[name]]);
